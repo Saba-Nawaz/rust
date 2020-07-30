@@ -1,0 +1,95 @@
+install vscode-----------------------
+
+$ rustc -V
+rustc 1.31.0 (abe02cefd 2018-12-04)
+
+
+Stm32 installation----------------------
+
+$ cargo install itm --vers 0.3.1
+
+$ itmdump -V
+itmdump 0.3.1
+
+cargo-binutils--------------------
+
+$ rustup component add llvm-tools-preview
+
+$ cargo install cargo-binutils --vers 0.1.4
+
+$ cargo size -- -version
+LLVM (http://llvm.org/):
+  LLVM version 8.0.0svn
+  Optimized build.
+  Default target: x86_64-unknown-linux-gnu
+  Host CPU: skylake
+
+
+Linux--------------------------------------
+
+$ sudo apt-get install \
+  gdb-multiarch \
+  minicom \
+  openocd
+
+
+Packages--------------------
+
+$ sudo apt-get install \
+  bluez \
+  rfkill
+
+set directory------------------
+
+sudo nano /etc/udev/rules.d/99-ftdi.rules
+
+and then copy these lines and paste in said file
+
+# FT232 - USB <-> Serial Converter
+ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE:="0666"
+
+then save and  exit
+
+sudo nano /etc/udev/rules.d/99-openocd.rules
+
+paste these lines in second file
+# STM32F3DISCOVERY rev A/B - ST-LINK/V2
+ATTRS{idVendor}=="0483", ATTRS{idProduct}=="3748", MODE:="0666"
+# STM32F3DISCOVERY rev C+ - ST-LINK/V2-1
+ATTRS{idVendor}=="0483", ATTRS{idProduct}=="374b", MODE:="0666"
+
+save and exit
+
+then this
+sudo udevadm control --reload-rules
+
+
+check these rules-----------------------
+
+$ cat /etc/udev/rules.d/99-ftdi.rules
+
+# FT232 - USB <-> Serial Converter
+ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE:="0666"
+
+$ cat /etc/udev/rules.d/99-openocd.rules
+
+# STM32F3DISCOVERY rev A/B - ST-LINK/V2
+ATTRS{idVendor}=="0483", ATTRS{idProduct}=="3748", MODE:="0666"
+
+# STM32F3DISCOVERY rev C+ - ST-LINK/V2-1
+ATTRS{idVendor}=="0483", ATTRS{idProduct}=="374b", MODE:="0666"
+
+Then reload the udev rules with:
+
+
+$ sudo udevadm control --reload-rules
+
+
+verification of installation of stm-------------------
+
+$ lsusb | grep -i stm
+Bus 003 Device 004: ID 0483:374b STMicroelectronics ST-LINK/V2.1
+
+$ ls -l /dev/bus/usb/003/004
+crw-rw-rw- 1 root root 189, 20 Sep 13 00:00 /dev/bus/usb/003/004
+

@@ -1,0 +1,96 @@
+code in main.rs------------------------------
+
+#![deny(unsafe_code)]
+#![no_main]
+#![no_std]
+
+use aux5::entry;
+
+#[entry]
+fn main() -> ! {
+    let _y;
+    let x = 42;
+    _y = x;
+
+    // infinite loop; just so we don't leave this stack frame
+    loop {}
+}
+
+
+build it---------------------------------
+-----------------------------------------------------------------------------------------
+
+$ rustup target add thumbv7em-none-eabihf
+
+this comman is not always run
+
+$ cargo readobj --target thumbv7em-none-eabihf --bin led-roulette -- -file-headers       
+
+
+Flash it-------------------------------
+--------------------------------------------------------------------------------------------------
+
+$ cd /tmp
+
+$ openocd \
+  -f interface/stlink-v2-1.cfg \
+  -f target/stm32f3x.cfg
+
+open new terminal-----------------------------
+
+gdb-multiarch -q target/thumbv7em-none-eabihf/debug/led-roulette
+
+
+(gdb) target remote :3333
+
+over all result of both terminal is
+
+ Info : stm32f3x.cpu: hardware has 6 breakpoints, 4 watchpoints
++Info : accepting 'gdb' connection on tcp/3333
++Info : device id = 0x10036422
++Info : flash size = 256kbytes
+
+this will remove the older code and off the leds
+
+(gdb) load 
+
+Debug it-------------------------------------------
+---------------------------------------------------------------------
+
+(gdb) break main
+
+(gdb) layout src
+
+(gdb) tui disable
+
+(gdb) step
+
+(gdb) print x
+
+(gdb) print &x
+
+(gdb) print _y
+
+(gdb) print &_y
+
+(gdb) info locals
+
+(gdb) step
+
+(gdb) print _y
+
+(gdb) layout asm
+
+(gdb) disassemble /m
+
+(gdb) stepi
+
+(gdb) stepi
+
+(gdb) monitor reset halt
+
+(gdb) continue
+
+(gdb) quit
+
+
